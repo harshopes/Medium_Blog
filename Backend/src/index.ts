@@ -2,7 +2,6 @@ import { Hono } from 'hono'
 import { blogRouter } from './routes/blog'
 import { userRouter } from './routes/user'
 
-
 const app = new Hono<{
   Bindings: {
     DATABASE_URL: string,

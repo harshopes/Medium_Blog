@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { verify } from "hono/jwt";
+import { blogInput, updateBlogInput } from "@harshopes/medium-blog-zod";
 
 export const blogRouter = new Hono<{
     Bindings: {
@@ -15,12 +16,17 @@ export const blogRouter = new Hono<{
 
 blogRouter.use("/*", async (c, next) => {
     const authHeader = c.req.header("authorization") || "";
-    const user = await verify(authHeader, c.env.SECRET);
+    try {
+        const user = await verify(authHeader, c.env.SECRET);
 
-    if (user) {
-        c.set("userId", String(user.id));
-        await next();
-    } else {
+        if (user) {
+            c.set("userId", String(user.id));
+            await next();
+        } else {
+            c.status(403);
+            return c.text("You are Not logged in")
+        }
+    } catch (error) {
         c.status(403);
         return c.text("You are Not logged in")
     }
@@ -69,6 +75,11 @@ blogRouter.get('/:id', async (c) => {
 // post a blog
 blogRouter.post('/', async (c) => {
     const body = await c.req.json();
+    const { success } = blogInput.safeParse(body);
+    if (!success) {
+        c.status(411);
+        return c.text("Invalid Blog inputs")
+    }
     const authorId = c.get("userId")
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL
@@ -90,6 +101,11 @@ blogRouter.post('/', async (c) => {
 // update a blog
 blogRouter.put('/', async (c) => {
     const body = await c.req.json();
+    const { success } = updateBlogInput.safeParse(body);
+    if (!success) {
+        c.status(411);
+        return c.text("Invalid Inputs")
+    }
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL
     }).$extends(withAccelerate())
