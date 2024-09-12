@@ -39,7 +39,18 @@ blogRouter.get('/bulk', async (c) => {
     }).$extends(withAccelerate());
 
     try {
-        const blogs = await prisma.post.findMany();
+        const blogs = await prisma.post.findMany({
+            select: {
+                title: true,
+                content: true,
+                id: true,
+                author: {
+                    select: {
+                        name: true
+                    }
+                }
+            }
+        });
         return c.json({
             blogs
         })
@@ -60,6 +71,15 @@ blogRouter.get('/:id', async (c) => {
         const blog = await prisma.post.findFirst({
             where: {
                 id: parseInt(id)
+            }, select: {
+                title: true,
+                content: true,
+                id: true,
+                author: {
+                    select: {
+                        name: true
+                    }
+                }
             }
         })
         return c.json({
@@ -93,9 +113,13 @@ blogRouter.post('/', async (c) => {
                 authorId: parseInt(authorId)
             }
         })
-        return c.text(`${blog.title} was published successfully`)
+        return c.json({
+            id: blog.id,
+        });
     } catch (err) {
-        return c.text(`error ${err}`)
+        console.error("Error creating blog post:", err); // Log error for debugging
+        // @ts-ignore
+        return c.text(`Error: ${err.message}`);
     }
 })
 // update a blog
