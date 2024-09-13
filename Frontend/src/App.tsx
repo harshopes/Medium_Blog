@@ -3,9 +3,9 @@ import { Signup } from './pages/Signup'
 import { Signin } from './pages/Signin'
 import { Blog } from './pages/Blog'
 import { Blogs } from './pages/Blogs'
-import { Navigate } from "react-router-dom";
 import { Publish } from './pages/publish'
 import { MineBlogs } from './pages/MineBlogs'
+import { Navigate } from "react-router-dom";
 function App() {
 
   return (
