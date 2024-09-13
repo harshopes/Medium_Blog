@@ -23,4 +23,5 @@ A Medium-like blogging platform featuring modern web technologies and efficient 
 
 ## Live Link
 
-- Live link: [to be updated]
+- Live link: [Medium Blog](https://medium-blog-sigma.vercel.app/signin)
+
