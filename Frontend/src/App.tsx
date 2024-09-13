@@ -3,7 +3,7 @@ import { Signup } from './pages/Signup'
 import { Signin } from './pages/Signin'
 import { Blog } from './pages/Blog'
 import { Blogs } from './pages/Blogs'
-import { Publish } from './pages/publish'
+import { Publish } from './pages/Publish'
 import { MineBlogs } from './pages/MineBlogs'
 import { Navigate } from "react-router-dom";
 function App() {
